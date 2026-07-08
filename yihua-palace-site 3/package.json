@@ -1,0 +1,10 @@
+{
+  "name": "yihua-palace-booking",
+  "version": "1.0.0",
+  "private": true,
+  "description": "移花宮預約入口頁面與門市後台管理",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "@netlify/functions": "^2.8.2"
+  }
+}
