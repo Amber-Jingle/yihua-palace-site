@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>移花宮 門市後台管理</title>
+<link rel="icon" href="yihua-logo.png">
+<meta name="robots" content="noindex, nofollow">
+
+<style>
+  :root{
+    --ink-blue-deep: #0B1F33;
+    --wood-deep: #4A3324;
+    --mist-gold: #C8A96A;
+    --mist-gold-text: #9C7A42;
+    --mist-gold-light: #E8D7B0;
+    --cream: #F8F1E7;
+    --stone: #EFE6D6;
+    --card-bg: #FBF6ED;
+    --text-dark: #3B2A1E;
+    --text-muted: #6B5847;
+    --danger: #9c4a3a;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    font-family: "Noto Sans TC", "PMingLiU", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--stone) 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding: 32px 16px 60px;
+  }
+
+  .wrap{ max-width: 880px; margin: 0 auto; }
+
+  h1{
+    text-align:center;
+    font-size: 22px;
+    color: var(--ink-blue-deep);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .subtitle{
+    text-align:center;
+    color: var(--mist-gold-text);
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-bottom: 32px;
+  }
+
+  /* ---- Login ---- */
+  #loginScreen{
+    max-width: 360px;
+    margin: 60px auto;
+    background: var(--card-bg);
+    border: 1px solid rgba(200,169,106,0.5);
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 8px 30px rgba(74,51,36,0.14);
+  }
+  #loginScreen label{
+    display:block;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 14px 0 6px;
+  }
+  #loginScreen input{
+    width:100%;
+    padding: 11px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(200,169,106,0.5);
+    background: #fff;
+    font-size: 15px;
+    color: var(--text-dark);
+  }
+  #loginScreen button{
+    width:100%;
+    margin-top: 22px;
+    padding: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(200,169,106,0.6);
+    background: linear-gradient(135deg, var(--ink-blue-deep), var(--wood-deep));
+    color: var(--mist-gold-light);
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor:pointer;
+  }
+  #loginScreen button:hover{
+    background: linear-gradient(135deg, var(--mist-gold), #dcc48f);
+    color: var(--ink-blue-deep);
+  }
+  .login-error{
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 12px;
+    min-height: 16px;
+    text-align:center;
+  }
+
+  /* ---- Admin screen ---- */
+  #adminScreen{ display:none; }
+
+  .panel{
+    background: var(--card-bg);
+    border: 1px solid rgba(200,169,106,0.5);
+    border-radius: 16px;
+    padding: 24px 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 24px rgba(74,51,36,0.10);
+  }
+
+  .panel h2{
+    font-size: 16px;
+    color: var(--ink-blue-deep);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .field-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .field-row.full{ grid-template-columns: 1fr; }
+
+  .field label{
+    display:block;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+  .field input, .field select, .field textarea{
+    width:100%;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(200,169,106,0.5);
+    background: #fff;
+    font-size: 14px;
+    color: var(--text-dark);
+    font-family: inherit;
+  }
+  .field textarea{ resize: vertical; min-height: 54px; }
+
+  .btn{
+    display:inline-block;
+    padding: 9px 20px;
+    border-radius: 999px;
+    border: 1px solid rgba(200,169,106,0.6);
+    font-size: 13.5px;
+    letter-spacing: 1px;
+    cursor:pointer;
+    background: linear-gradient(135deg, var(--ink-blue-deep), var(--wood-deep));
+    color: var(--mist-gold-light);
+  }
+  .btn:hover{ background: linear-gradient(135deg, var(--mist-gold), #dcc48f); color: var(--ink-blue-deep); }
+  .btn.danger{ background: #fff; color: var(--danger); border-color: rgba(156,74,58,0.4); }
+  .btn.danger:hover{ background: var(--danger); color: #fff; }
+  .btn.ghost{ background: #fff; color: var(--text-muted); border-color: rgba(200,169,106,0.5); }
+  .btn.ghost:hover{ background: var(--stone); }
+
+  .store-row{
+    border: 1px solid rgba(200,169,106,0.35);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    background: #fff;
+  }
+  .store-row-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .badge{
+    font-size: 11.5px;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .badge.active{ background: rgba(154,193,115,0.2); color: #4c7a33; }
+  .badge.soon{ background: rgba(150,130,100,0.18); color: var(--text-muted); }
+
+  .row-actions{ display:flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+  .status-msg{
+    text-align:center;
+    font-size: 13px;
+    color: var(--mist-gold-text);
+    min-height: 18px;
+    margin-bottom: 10px;
+  }
+  .status-msg.error{ color: var(--danger); }
+
+  #logoutBtn{
+    display:block;
+    margin: 0 auto 24px;
+  }
+
+  @media (max-width: 560px){
+    .field-row{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>移花宮 門市後台管理</h1>
+  <div class="subtitle">Yihua Palace · Store Admin</div>
+
+  <div id="loginScreen">
+    <label for="loginUser">帳號</label>
+    <input type="text" id="loginUser" autocomplete="username">
+    <label for="loginPass">密碼</label>
+    <input type="password" id="loginPass" autocomplete="current-password">
+    <button id="loginBtn" type="button">登入</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+
+  <div id="adminScreen">
+    <button class="btn ghost" id="logoutBtn" type="button">登出</button>
+    <div class="status-msg" id="statusMsg"></div>
+
+    <div class="panel">
+      <h2>新增門市</h2>
+      <div class="field-row">
+        <div class="field">
+          <label>店名</label>
+          <input type="text" id="newName" placeholder="例如：板橋新店">
+        </div>
+        <div class="field">
+          <label>交通資訊小字</label>
+          <input type="text" id="newSubtitle" placeholder="例如：板橋站步行約 5 分鐘">
+        </div>
+      </div>
+      <div class="field-row full">
+        <div class="field">
+          <label>門市描述</label>
+          <textarea id="newDescription" placeholder="適合＿＿周邊顧客預約。"></textarea>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>預約連結</label>
+          <input type="text" id="newLink" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label>上線狀態</label>
+          <select id="newStatus">
+            <option value="coming_soon" selected>籌備中（頁面上顯示但不可點擊）</option>
+            <option value="active">上線中（可直接預約）</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" id="createBtn" type="button">新增這間門市</button>
+    </div>
+
+    <div class="panel">
+      <h2>現有門市列表</h2>
+      <div id="storeList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var authHeader = null;
+
+  function escapeHtml(str){
+    return String(str == null ? "" : str).replace(/[&<>"']/g, function(c){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+    });
+  }
+
+  function api(action, extra){
+    return fetch('/api/stores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': authHeader },
+      body: JSON.stringify(Object.assign({ action: action }, extra || {}))
+    }).then(function(res){
+      return res.json().then(function(data){
+        if(!res.ok){ throw new Error(data.error || ('HTTP ' + res.status)); }
+        return data;
+      });
+    });
+  }
+
+  function setStatus(msg, isError){
+    var el = document.getElementById('statusMsg');
+    el.textContent = msg || '';
+    el.className = 'status-msg' + (isError ? ' error' : '');
+  }
+
+  function renderList(stores){
+    var list = document.getElementById('storeList');
+    if(!stores || stores.length === 0){
+      list.innerHTML = '<p style="color:var(--text-muted);font-size:14px;">目前尚無門市資料。</p>';
+      return;
+    }
+
+    list.innerHTML = stores.map(function(s){
+      var badgeClass = s.status === 'active' ? 'active' : 'soon';
+      var badgeText = s.status === 'active' ? '上線中' : '籌備中';
+      return '' +
+        '<div class="store-row" data-id="' + escapeHtml(s.id) + '">' +
+          '<div class="store-row-top">' +
+            '<strong>' + escapeHtml(s.name) + '</strong>' +
+            '<span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
+          '</div>' +
+          '<div class="field-row">' +
+            '<div class="field"><label>店名</label><input type="text" class="f-name" value="' + escapeHtml(s.name) + '"></div>' +
+            '<div class="field"><label>交通資訊小字</label><input type="text" class="f-subtitle" value="' + escapeHtml(s.subtitle) + '"></div>' +
+          '</div>' +
+          '<div class="field-row full">' +
+            '<div class="field"><label>門市描述</label><textarea class="f-description">' + escapeHtml(s.description) + '</textarea></div>' +
+          '</div>' +
+          '<div class="field-row">' +
+            '<div class="field"><label>預約連結</label><input type="text" class="f-link" value="' + escapeHtml(s.link) + '"></div>' +
+            '<div class="field"><label>上線狀態</label>' +
+              '<select class="f-status">' +
+                '<option value="coming_soon"' + (s.status !== 'active' ? ' selected' : '') + '>籌備中</option>' +
+                '<option value="active"' + (s.status === 'active' ? ' selected' : '') + '>上線中</option>' +
+              '</select>' +
+            '</div>' +
+          '</div>' +
+          '<div class="row-actions">' +
+            '<button class="btn save-btn" type="button">儲存變更</button>' +
+            '<button class="btn danger delete-btn" type="button">刪除門市</button>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+
+    list.querySelectorAll('.store-row').forEach(function(row){
+      var id = row.getAttribute('data-id');
+
+      row.querySelector('.save-btn').addEventListener('click', function(){
+        setStatus('儲存中…');
+        api('update', {
+          id: id,
+          name: row.querySelector('.f-name').value,
+          subtitle: row.querySelector('.f-subtitle').value,
+          description: row.querySelector('.f-description').value,
+          link: row.querySelector('.f-link').value,
+          status: row.querySelector('.f-status').value
+        }).then(function(data){
+          setStatus('已儲存變更。');
+          renderList(data.stores);
+        }).catch(function(e){
+          setStatus('儲存失敗：' + e.message, true);
+        });
+      });
+
+      row.querySelector('.delete-btn').addEventListener('click', function(){
+        if(!confirm('確定要刪除這間門市嗎？此動作無法復原。')) return;
+        setStatus('刪除中…');
+        api('delete', { id: id }).then(function(data){
+          setStatus('已刪除門市。');
+          renderList(data.stores);
+        }).catch(function(e){
+          setStatus('刪除失敗：' + e.message, true);
+        });
+      });
+    });
+  }
+
+  document.getElementById('createBtn').addEventListener('click', function(){
+    var name = document.getElementById('newName').value.trim();
+    var link = document.getElementById('newLink').value.trim();
+    if(!name || !link){
+      setStatus('店名與預約連結為必填。', true);
+      return;
+    }
+    setStatus('新增中…');
+    api('create', {
+      name: name,
+      subtitle: document.getElementById('newSubtitle').value.trim(),
+      description: document.getElementById('newDescription').value.trim(),
+      link: link,
+      status: document.getElementById('newStatus').value
+    }).then(function(data){
+      setStatus('已新增門市「' + name + '」。');
+      document.getElementById('newName').value = '';
+      document.getElementById('newSubtitle').value = '';
+      document.getElementById('newDescription').value = '';
+      document.getElementById('newLink').value = '';
+      document.getElementById('newStatus').value = 'coming_soon';
+      renderList(data.stores);
+    }).catch(function(e){
+      setStatus('新增失敗：' + e.message, true);
+    });
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', function(){
+    authHeader = null;
+    document.getElementById('adminScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'block';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginError').textContent = '';
+  });
+
+  function doLogin(){
+    var user = document.getElementById('loginUser').value.trim();
+    var pass = document.getElementById('loginPass').value;
+    var errEl = document.getElementById('loginError');
+    errEl.textContent = '';
+
+    if(!user || !pass){
+      errEl.textContent = '請輸入帳號與密碼。';
+      return;
+    }
+
+    authHeader = 'Basic ' + btoa(user + ':' + pass);
+
+    api('verify').then(function(data){
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminScreen').style.display = 'block';
+      renderList(data.stores);
+    }).catch(function(){
+      authHeader = null;
+      errEl.textContent = '帳號或密碼錯誤，請再試一次。';
+    });
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('loginPass').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') doLogin();
+  });
+</script>
+
+</body>
+</html>
